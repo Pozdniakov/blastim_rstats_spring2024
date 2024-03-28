@@ -8,5 +8,5 @@ heroes %>%
   mutate(Race = make.names(Race)) %>%
   split(.$Race) %>%
   iwalk(function(x, idx) write_csv(x,
-                                   paste0("data/many_tables/heroes_", idx)))
+                                   paste0("data/many_tables/heroes_", idx, ".csv")))
 

@@ -124,3 +124,132 @@ heroes %>%
 
 heroes %>%
   pull(Height, name)
+
+# Working with rows -------------------------------------------------------
+
+heroes %>%
+  slice(c(30, 100, 300))
+
+#as_tibble(mtcars)
+
+heroes %>%
+  filter(Publisher == "DC Comics" & Gender == "Female")
+
+heroes %>%
+  filter(Publisher == "DC Comics", Gender == "Female")
+
+heroes %>%
+  filter(Publisher == "DC Comics") %>%
+  filter(Gender == "Female")
+
+heroes %>%
+  filter(Weight < 40 | Weight > 400)
+
+heroes %>%
+  slice_max(Weight, n = 10, with_ties = FALSE)
+
+heroes %>%
+  slice_min(Weight, n = 3)
+
+heroes %>%
+  slice_sample(n = 3)
+
+heroes %>%
+  slice_sample(prop = .01)
+
+heroes %>%
+  slice_sample(prop = 1)
+
+heroes %>%
+  slice_sample(n = 3)
+
+heroes %>%
+  slice(1:3)
+
+heroes %>%
+  drop_na()
+
+heroes %>%
+  drop_na(Height)
+
+heroes %>%
+  drop_na(where(is.numeric))
+
+# Sorting rows ------------------------------------------------------------
+
+heroes %>%
+  arrange(Weight)
+
+heroes %>%
+  arrange(desc(Weight))
+
+heroes %>%
+  arrange(Gender)
+
+heroes %>%
+  arrange(Gender, Height)
+
+
+# Creating new columns ----------------------------------------------------
+
+heroes %>%
+  mutate(imt = Weight / (Height/100) ^ 2) %>%
+  select(name, imt) %>%
+  arrange(imt)
+
+heroes %>%
+  transmute(name, imt = Weight / (Height/100) ^ 2)
+
+heroes %>%
+  mutate(id = row_number(), .before = name)
+
+# Aggregation -------------------------------------------------------------
+
+heroes %>%
+  summarise(mean_weight = mean(Weight, na.rm = TRUE),
+            max_weight = max(Weight, na.rm = TRUE),
+            first = first(Weight),
+            tenth = nth(Weight, n = 10),
+            last = last(Weight))
+
+heroes %>%
+  group_by(Gender) %>%
+  summarise(mean_weight = mean(Weight, na.rm = TRUE),
+            max_weight = max(Weight, na.rm = TRUE),
+            first = first(Weight),
+            tenth = nth(Weight, n = 10),
+            last = last(Weight))
+
+heroes %>%
+  summarise(mean_weight = mean(Weight, na.rm = TRUE), .by = Gender)
+
+heroes %>%
+  group_by(Gender) %>%
+  mutate(mean_weight_by_gender = mean(Weight, na.rm = TRUE)) %>%
+  ungroup() %>%
+  mutate(weight_dev = Weight - mean_weight_by_gender, .after = Gender)
+
+heroes %>%
+  group_by(Gender) %>%
+  summarise(n = n())
+
+heroes %>%
+  count(Gender, Alignment, sort = TRUE)
+
+heroes %>%
+  count(Gender, Alignment, sort = TRUE) %>%
+  mutate(prop = n / sum(n))
+
+heroes %>%
+  count(Weight > 200)
+
+heroes %>%
+  group_by(Race) %>%
+  filter(n() >= 10)
+
+heroes %>%
+  group_by(Race) %>%
+  filter(n() == 1)
+
+ls()
+dir("data/many_tables")
