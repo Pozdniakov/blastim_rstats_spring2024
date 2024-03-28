@@ -251,5 +251,30 @@ heroes %>%
   group_by(Race) %>%
   filter(n() == 1)
 
+# Advanced R --------------------------------------------------------------
+
 ls()
-dir("data/many_tables")
+file_names <- dir("data/many_tables",
+    pattern = ".*csv",
+    full.names = TRUE)
+
+#read_csv(file_names)
+
+list_of_df <- map(file_names, read_csv)
+
+races <- file_names %>%
+  str_remove("data/many_tables/heroes_") %>%
+  str_remove(".csv")
+
+names(list_of_df) <- races
+list_of_df
+bind_rows(list_of_df$Alien, list_of_df$Mutant, .id = "id")
+
+bind_rows(list_of_df, .id = "id")
+
+one_big_df <- map_dfr(file_names, read_csv)
+
+band_members
+band_instruments
+
+left_join(band_members)
