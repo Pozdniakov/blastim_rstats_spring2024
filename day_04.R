@@ -277,4 +277,135 @@ one_big_df <- map_dfr(file_names, read_csv)
 band_members
 band_instruments
 
-left_join(band_members)
+left_join(band_members, band_instruments, by = "name")
+band_members %>%
+  left_join(band_instruments, by = "name")
+
+band_instruments2
+
+band_members %>%
+  left_join(band_instruments2, by = c("name" = "artist"))
+
+band_members %>%
+  right_join(band_instruments)
+
+band_members %>%
+  full_join(band_instruments)
+
+band_members %>%
+  inner_join(band_instruments)
+
+band_members %>%
+  semi_join(band_instruments)
+
+# band_members %>%
+#   filter(name %in% band_instruments$name)
+
+band_members %>%
+  anti_join(band_instruments)
+
+band_instruments %>%
+  anti_join(band_members)
+# band_instruments %>%
+#   filter(!name %in% band_members$name)
+
+powers <- read_csv("https://raw.githubusercontent.com/Pozdniakov/tidy_stats/master/data/super_hero_powers.csv")
+
+powers_web <- powers %>%
+  filter(`Web Creation`)
+
+heroes %>%
+  semi_join(powers_web, by = c("name" = "hero_names"))
+
+heroes %>%
+  anti_join(powers, by = c("name" = "hero_names")) %>%
+  pull(name)
+
+students <- tribble(
+        ~student, ~before, ~after,
+        "Antonina", 70, 63,
+        "Vasya", 80, 79,
+        "Petya", 91, 80)
+
+students %>%
+  pivot_longer(before:after,
+               names_to = "time",
+               values_to = "weight") %>%
+  pivot_wider(names_from = time,
+              values_from = weight)
+
+# across() ----------------------------------------------------------------
+
+
+heroes %>%
+  drop_na(Height, Weight) %>%
+  group_by(Gender) %>%
+  summarise(height_mean = mean(Height),
+            weight_mean = mean(Weight))
+
+heroes %>%
+  drop_na(Height, Weight) %>%
+  group_by(Gender) %>%
+  summarise(across(c(Height, Weight),
+                   mean))
+
+heroes %>%
+  drop_na(Height, Weight) %>%
+  group_by(Gender) %>%
+  summarise(across(where(is.numeric),
+                   mean))
+
+heroes %>%
+  drop_na(Height, Weight) %>%
+  group_by(Gender) %>%
+  summarise(across(where(is.numeric),
+                   mean),
+            across(where(is.character),
+                   function(x) mean(nchar(x), na.rm = TRUE)))
+
+heroes %>%
+  drop_na(Height, Weight) %>%
+  group_by(Gender) %>%
+  summarise(across(where(is.numeric),
+                   list(average = mean,
+                        minimum = min,
+                        maximum = max)))
+
+iris %>%
+  mutate(across(where(is.numeric), scale))
+
+iris %>%
+  mutate(across(where(is.numeric), function(x) (x / max(x)) * 100 ))
+
+
+# nested columns ----------------------------------------------------------
+
+heroes %>%
+  nest(!Gender) %>%
+  mutate(dim = map(data, dim)) %>%
+  select(!data) %>%
+  unnest()
+
+nested_heroes <- heroes %>%
+  nest(!Gender)
+
+films <- tibble(film = c("Звонок",
+                         "Побег из Шоушенка",
+                         "Начало",
+                         "Зеленая миля"),
+                genres = c("horror, fantasy",
+                           "drama, triller",
+                           "fantasy, action",
+                           "drama, criminal, fantasy"))
+
+films
+
+str_split(films$genres, pattern = ", ")
+
+films %>%
+  mutate(genres = str_split(genres, ", ")) %>%
+  unnest() %>%
+  mutate(value = TRUE) %>%
+  pivot_wider(names_from = genres,
+              values_from = value,
+              values_fill = FALSE)
