@@ -1,0 +1,99 @@
+---
+title: "First example of Quarto"
+author: "Ivan Pozdniakov"
+format: html
+editor: visual
+bibliography: bibliography.bib
+---
+
+# Основы Markdown
+
+## Курсив и полужирный
+
+Выделение *курсивом* возможно *двумя способами.*
+
+<b> HTML теги тоже работают</b>
+
+Выделение **полужирным** тоже возможно **двумя способами**
+
+## Непроименованные списки
+
+-   Элемент списка
+-   Еще элемент списка
+    -   подсписок
+    -   еще элемент подсписка
+
+## Проименованные списки
+
+1.  Можно создавать и в визуальном редакторе
+2.  Пронумерованный
+3.  Список
+
+Дальше идет текст, который не список.
+
+## Гиперссылки
+
+Сайт про Quarto: <https://quarto.org/docs/get-started/>
+
+[Сайт про Quarto (кликабельно!)](https://quarto.org/docs/get-started/)
+
+Гиперссылки можно [создавать](https://quarto.org/docs/get-started/) и в [[визуальном]{.underline}](https://quarto.org/docs/get-started/) редакторе.
+
+## Картинки
+
+![](https://quarto.org/docs/get-started/hello/images/rstudio-qmd-how-it-works.png)
+
+## Цитаты
+
+> "Проблема цитат в интернете в том, что никто не проверяет их подлинность" (В.И. Ленин)
+
+## Формулы
+
+$$
+cos^2(x) + sin^2(x) = 1
+$$ ---
+
+## Таблицы
+
+| First Header | Second Header |
+|--------------|---------------|
+| Content Cell | Content Cell  |
+| Content Cell | Content Cell  |
+
+## Сабскрипты, суперсурипты и зачеркивания
+
+Если я хочу добавить текст ^сверху^, то я использую домики, если хочу добавить текст ~снизу~, то использую тильды.
+
+~~Зачеркнутый текст~~ достигается двумя тильдами
+
+## Ссылки
+
+Ссылка на статью @wickham2019welcome
+
+## Чанки с кодом
+
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+```
+
+```{r}
+#| message: false
+#| warning: false
+heroes <- read_csv("https://raw.githubusercontent.com/Pozdniakov/tidy_stats/master/data/heroes_information.csv",
+                   na = c("-99", "-", "NA", ""))
+```
+
+```{r}
+summary(heroes$Weight)
+```
+
+```{r}
+#| echo: false
+plot(heroes$Height, heroes$Weight)
+```
+
+```{r}
+library(DT)
+datatable(heroes)
+
+```
